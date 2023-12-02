@@ -1,0 +1,10 @@
+{
+  "name": "adventofcode2023",
+  "version": "1.0.0",
+  "scripts": {
+    "day01": "ts-node ./src/day01/main.ts"
+  },
+  "dependencies": {
+    "@types/node": "^20.10.2"
+  }
+}
