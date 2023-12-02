@@ -3,6 +3,7 @@ export default class Game {
   private _maxRed: number = 0;
   private _maxGreen: number = 0;
   private _maxBlue: number = 0;
+
   private _red: number = 0;
   private _green: number = 0;
   private _blue: number = 0;
@@ -26,17 +27,11 @@ export default class Game {
 
       pulls.forEach(pull => {
         if (pull.includes("red")) {
-          const redPull = Number(pull.replace("red", ""));
-          if (redPull > this._red)
-            this._red = redPull;
+          this.red = pull;
         } else if (pull.includes("green")) {
-          const greenPull = Number(pull.replace("green", ""));
-          if (greenPull > this._green)
-            this._green = greenPull;
+          this.green = pull;
         } else if (pull.includes("blue")) {
-          const bluePull = Number(pull.replace("blue", ""));
-          if (bluePull > this._blue)
-            this._blue = bluePull;
+          this.blue = pull;
         }
       })
     })
@@ -46,16 +41,34 @@ export default class Game {
     return this._id;
   }
 
-  public get red() {
+  public get red(): number {
     return this._red;
   }
-
-  public get green() {
-    return this._green;
+  public set red(pull: string) {
+    const redPull = Number(pull.replace("red", ""));
+    if (redPull > this._red) {
+      this._red = redPull;
+    }
   }
 
-  public get blue() {
+  public get green(): number {
+    return this._green;
+  }
+  public set green(pull: string) {
+    const greenPull = Number(pull.replace("green", ""));
+    if (greenPull > this._green) {
+      this._green = greenPull;
+    }
+  }
+
+  public get blue(): number {
     return this._blue;
+  }
+  public set blue(pull: string) {
+    const bluePull = Number(pull.replace("blue", ""));
+    if (bluePull > this._blue) {
+      this._blue = bluePull;
+    }
   }
 
   public get isValid() {
@@ -64,5 +77,9 @@ export default class Game {
       this._green <= this._maxGreen &&
       this._blue <= this._maxBlue
     );
+  }
+
+  public get power() {
+    return this.red * this.green * this.blue;
   }
 }

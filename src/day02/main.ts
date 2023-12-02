@@ -33,12 +33,14 @@ const example = getExample("day02");
 
 let input = file;
 
-const games = input.split(EOL);
-console.log(games)
+const games = input.split(EOL)
+  .map(game => new Game(game));
 
 const validGames = games
-  .map(game => new Game(game))
   .filter(game => game.isValid);
 
 const sum = validGames.reduce((sum, current) => sum + current.id, 0);
-console.log(sum);
+console.log(`Part 1: ${sum}`);
+
+const sum2 = games.reduce((sum, current) => sum + current.power, 0);
+console.log(`Part 2: ${sum2}`);
