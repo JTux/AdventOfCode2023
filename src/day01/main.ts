@@ -37,9 +37,9 @@
 // What is the sum of all of the calibration values?
 
 import { EOL } from "os";
-import { getFile } from "../../utils/getFile";
+import { getInput } from "../../utils/getFile";
 
-const file = getFile("day01");
+const file = getInput("day01");
 
 const lineNumbers = file.split(EOL).map(line => {
   const nums = line.replace(/\D/g, "");
