@@ -54,10 +54,9 @@
 
 // What is the sum of all of the gear ratios in your engine schematic?
 
-import { syncBuiltinESMExports } from "module";
 import { getExample, getInput } from "../../utils/getFile";
+import getSum from "../../utils/getSum";
 import Map, { Cell } from "./classes/Map";
-import { addAbortListener } from "events";
 
 const example = getExample("day03");
 const input = getInput("day03");
@@ -65,10 +64,12 @@ const input = getInput("day03");
 const file = input;
 
 const map = new Map(file);
-
-const partNumbers: { number: number, xStart: number, xEnd: number, y: number }[] = [];
-let buffer: Cell[] = [];
 const cells = map.cells;
+
+type PartNumber = { number: number, xStart: number, xEnd: number, y: number };
+const partNumbers: PartNumber[] = [];
+
+let buffer: Cell[] = [];
 cells.forEach(c => {
   if (c.type === "Number") {
     buffer.push(c);
@@ -88,55 +89,37 @@ cells.forEach(c => {
 });
 
 const validPartNumbers: number[] = [];
-const symbols = cells.filter(c => c.type == "Symbol");
+const gears: { [key: string]: number[] } = {}
 
-type Gear = { [key: string]: number[] }
-const gears: Gear = {}
+partNumbers.forEach(p => {
+  const adjacentSymbols = cells.filter(symbol => {
+    if (symbol.type !== "Symbol") return false;
 
-partNumbers.forEach(partNumber => {
-  const adjacentSymbols = symbols.filter(symbol => {
-    const validCoords = [symbol.coords, ...symbol.coords.neighbors].filter(symbolCoords => {
-
-      if (
-        (symbolCoords.y === partNumber.y) ||
-        (symbolCoords.y === (partNumber.y)) ||
-        (symbolCoords.y === (partNumber.y))
-      ) {
-        if (
-          (symbolCoords.x === (partNumber.xStart)) ||
-          ((symbolCoords.x >= partNumber.xStart) && (symbolCoords.x <= partNumber.xEnd)) ||
-          (symbolCoords.x === (partNumber.xEnd))
-        ) {
-          return true;
-        }
-      }
-      return false;
-    });
+    const validCoords = [symbol.coords, ...symbol.coords.neighbors].filter(s =>
+      (s.y === p.y) && ((s.x >= p.xStart) && (s.x <= p.xEnd))
+    );
 
     return validCoords.length > 0;
   });
 
-
   if (adjacentSymbols.length > 0) {
-    validPartNumbers.push(partNumber.number)
+    validPartNumbers.push(p.number);
 
-    const adjacentGears = adjacentSymbols.filter(s => s.value === "*");
-    if (adjacentGears.length) {
-      adjacentGears.forEach(g => {
-        const key = `${g.coords.x},${g.coords.y}`
-        const existingGears = gears[key] ? [...gears[key]] : []
-        gears[key] = [...existingGears, partNumber.number];
+    adjacentSymbols.filter(s => s.value === "*")
+      .forEach(g => {
+        const key = `${g.coords.x},${g.coords.y}`;
+        const existingGears = gears[key] ? [...gears[key]] : [];
+        gears[key] = [...existingGears, p.number];
       });
-    }
   }
 });
 
-const sum = validPartNumbers.reduce((sum, current) => sum + current, 0);
+const sum = validPartNumbers.reduce(getSum, 0);
 console.log(`Part 1: ${sum}`);
 
 const sum2 = Object.values(gears)
   .filter(a => a.length == 2)
   .map(g => g[0] * g[1])
-  .reduce((sum, current) => sum + current, 0);
+  .reduce(getSum, 0);
 
 console.log(`Part 2: ${sum2}`);

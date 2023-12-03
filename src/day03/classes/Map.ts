@@ -2,6 +2,8 @@ import { EOL } from "os";
 
 export default class Map {
   public readonly rows: Row[];
+  public readonly cells: Cell[];
+  public readonly symbols: Cell[];
 
   constructor(input: string) {
     const lines = input.split(EOL);
@@ -9,18 +11,9 @@ export default class Map {
     this.rows = lines.map(
       (line, rowIndex) => new Row(`${line}.`, rowIndex)
     );
-  }
 
-  public get symbols() {
-    return this.rows.flatMap(r =>
-      r.cells.filter(c =>
-        c.type === "Symbol"
-      )
-    );
-  }
-
-  public get cells() {
-    return this.rows.flatMap(r => r.cells);
+    this.cells = this.rows.flatMap(r => r.cells);
+    this.symbols = this.cells.filter(r => r.type === "Symbol");
   }
 }
 
@@ -34,42 +27,29 @@ export class Row {
       (c, columnIndex) => new Cell(c, columnIndex, rowIndex)
     );
   }
-
-  public getCellAt(x: number, y: number): Cell | undefined {
-    const cell = this.cells.filter(c =>
-      c.coords.x === x && c.coords.y === y
-    );
-
-    return cell.length > 0 ? cell[0] : undefined;
-  }
 }
 
 export class Cell {
-  private _type: CellType;
-  private _sets = {
-    numbers: "0123456789",
-    period: "."
-  }
+  public readonly type: CellType;
 
   public readonly coords: Coords;
   public readonly value: string;
 
   constructor(character: string, x: number, y: number) {
-    this.type = character;
     this.coords = new Coords(x, y);
     this.value = character;
-  }
 
-  public get type(): CellType {
-    return this._type;
-  }
-  public set type(character: string) {
-    if (this._sets.numbers.includes(character)) {
-      this._type = "Number";
-    } else if (this._sets.period.includes(character)) {
-      this._type = "Period"
+    const sets = {
+      numbers: "0123456789",
+      period: "."
+    }
+
+    if (sets.numbers.includes(character)) {
+      this.type = "Number";
+    } else if (sets.period.includes(character)) {
+      this.type = "Period"
     } else {
-      this._type = "Symbol";
+      this.type = "Symbol";
     }
   }
 }
