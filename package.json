@@ -4,7 +4,8 @@
   "scripts": {
     "day01": "ts-node ./src/day01/main.ts",
     "day02": "ts-node ./src/day02/main.ts",
-    "day03": "ts-node ./src/day03/main.ts"
+    "day03": "ts-node ./src/day03/main.ts",
+    "day04": "ts-node ./src/day04/main.ts"
   },
   "dependencies": {
     "@types/node": "^20.10.2"
