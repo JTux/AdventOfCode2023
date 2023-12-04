@@ -74,5 +74,24 @@ const cards = file.split(EOL).map(line => new Card(line));
 const sum = cards.map(c => c.pointValue).reduce(getSum, 0);
 console.log(`Part 1: ${sum}`);
 
+let cardNumbers: { [id: string]: number; } = {};
 
+for (let i = 0; i < cards.length; i++) {
+  let card = cards[i];
 
+  if (!cardNumbers[card.id]) {
+    cardNumbers[card.id] = 1;
+  } else {
+    cardNumbers[card.id]++;
+  }
+
+  for (let j = 1; j <= card.matches.length; j++) {
+    const nextCardId = card.id + j;
+    const duplicate = cards.find(c => c.id == nextCardId);
+    if (duplicate)
+      cards.push(duplicate);
+  }
+}
+
+const sum2 = Object.values(cardNumbers).reduce(getSum, 0);
+console.log(`Part 2: ${sum2}`);
