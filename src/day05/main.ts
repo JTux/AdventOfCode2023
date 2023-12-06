@@ -93,6 +93,20 @@
 
 // What is the lowest location number that corresponds to any of the initial seed numbers?
 
+// --- Part Two ---
+// Everyone will starve if you only plant such a small number of seeds. Re-reading the almanac, it looks like the seeds: line actually describes ranges of seed numbers.
+
+// The values on the initial seeds: line come in pairs. Within each pair, the first value is the start of the range and the second value is the length of the range. So, in the first line of the example above:
+
+// seeds: 79 14 55 13
+// This line describes two ranges of seed numbers to be planted in the garden. The first range starts with seed number 79 and contains 14 values: 79, 80, ..., 91, 92. The second range starts with seed number 55 and contains 13 values: 55, 56, ..., 66, 67.
+
+// Now, rather than considering four seed numbers, you need to consider a total of 27 seed numbers.
+
+// In the above example, the lowest location number can be obtained from seed number 82, which corresponds to soil 84, fertilizer 84, water 84, light 77, temperature 45, humidity 46, and location 46. So, the lowest location number is 46.
+
+// Consider all of the initial seed numbers listed in the ranges on the first line of the almanac. What is the lowest location number that corresponds to any of the initial seed numbers?
+
 import { EOL } from "os";
 import { getExample, getInput } from "../../utils/getFile";
 import { Mapping } from "./classes/Mapping";
@@ -129,17 +143,50 @@ for (let i = 0; i < lines.length; i++) {
   }
 }
 
-let targetNumbers: number[] = [...targetSeeds];
 let keys = Object.keys(sets);
-console.log(sets)
 
+let targetNumbers: number[] = [...targetSeeds];
 keys.forEach((k) => {
   for (let i = 0; i < targetNumbers.length; i++) {
     let num = targetNumbers[i];
     targetNumbers[i] = sets[k].getDestination(num);
   }
 });
-
 const lowNum = targetNumbers.sort((a, b) => a - b)[0];
-console.log(targetNumbers)
 console.log(`Part 1: ${lowNum}`)
+
+// -------------------------------- PART 2 ------------------------------------
+
+const seedPairs: { start: number, length: number }[] = [];
+for (let i = 0; i < targetSeeds.length; i += 2) {
+  seedPairs.push({ start: targetSeeds[i], length: targetSeeds[i + 1] });
+}
+
+let lowNum2 = NaN;
+
+// Get the location # for each seed pair
+seedPairs.forEach((pair) => {
+  // Take a seed pair and iterate through all of its range
+  for (let i = pair.start; i < pair.start + pair.length; i++) {
+    
+    // Take the seed and go through all keys in order to get the destination
+    let source = i;
+    keys.forEach((k) => {
+      // Grab the next set in the flow
+      const set = sets[k];
+
+      // Check this set for the next destination given the source
+      const destination = set.getDestination(source);
+
+      // Set the next source as the new found destination
+      source = destination;
+    });
+
+    // Take the location (source) and compare it to the current lowest location number
+    if (lowNum2 > source || isNaN(lowNum2)) {
+      lowNum2 = source;
+    }
+  }
+})
+
+console.log(`Part 2: ${lowNum2}`);
