@@ -94,9 +94,9 @@ let results: number[] = []
 races.forEach((r) => {
   let res = getRaceData(r);
   results.push(res);
-})
+});
 
-console.log("Part 1:", results.reduce((a, b) => a * b))
+console.log("Part 1:", results.reduce((a, b) => a * b));
 
 let longRace = {
   raceTime: Number(dataSet[0].join("")),
@@ -104,4 +104,4 @@ let longRace = {
 };
 
 const res = getRaceData(longRace);
-console.log("Part 2:", res)
+console.log("Part 2:", res);
