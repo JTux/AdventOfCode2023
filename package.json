@@ -6,7 +6,8 @@
     "day02": "ts-node ./src/day02/main.ts",
     "day03": "ts-node ./src/day03/main.ts",
     "day04": "ts-node ./src/day04/main.ts",
-    "day05": "ts-node ./src/day05/main.ts"
+    "day05": "ts-node ./src/day05/main.ts",
+    "day06": "ts-node ./src/day06/main.ts"
   },
   "dependencies": {
     "@types/node": "^20.10.2"
